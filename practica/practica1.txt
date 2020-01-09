@@ -1,8 +1,11 @@
-a.db.facturas.find({}).count();
+// a
+db.facturas.find({}).count();
 
-b.db.facturas.findOne({}, { _id: 0 });
+// b
+db.facturas.findOne({}, { _id: 0 });
 
-c.db.facturas
+// c
+db.facturas
   .find({
     fechaEmision: { $gt: new Date("2014-02-23") },
     nroFactura: { $lt: 1500 }
@@ -12,7 +15,8 @@ c.db.facturas
     "cliente.cuit": 1
   });
 
-d.db.facturas
+// d
+db.facturas
   .find(
     {
       "item.producto": "CORREA 10mm"
@@ -25,7 +29,8 @@ d.db.facturas
     "cliente.apellido": 1
   });
 
-e.db.facturas.find(
+// e
+db.facturas.find(
   {
     nroFactura: { $gt: 2500, $lt: 3000 }
   },
@@ -35,7 +40,8 @@ e.db.facturas.find(
   }
 );
 
-f.db.facturas.find(
+// f
+db.facturas.find(
   {
     nroFactura: { $in: [5000, 6000, 7000, 8000] }
   },
@@ -44,7 +50,8 @@ f.db.facturas.find(
   }
 );
 
-g.db.facturas
+// g
+db.facturas
   .find({
     "cliente.apellido": /^Z/i
   })
@@ -53,7 +60,8 @@ g.db.facturas
   })
   .limit(5);
 
-h.db.facturas
+// h
+db.facturas
   .find({
     $or: [{ "cliente.region": "CENTRO" }, { condPago: "CONTADO" }]
   })
@@ -63,13 +71,16 @@ h.db.facturas
   .skip(5)
   .limit(5);
 
-i.db.facturas.find({
+// i
+db.facturas.find({
   "cliente.apellido": { $nin: ["Zavasi", "Malinez"] }
 });
 
-j.db.facturas.find({ "item.cantidad": 15 }, { "item.producto": 1 });
+// j
+db.facturas.find({ "item.cantidad": 15 }, { "item.producto": 1 });
 
-k.db.facturas.findOne({
+// k
+db.facturas.findOne({
   "cliente.cuit": 2038373771,
   condPago: "30 Ds FF",
   fechaVencimiento: { $gt: new Date("2014-03-20"), $lt: new Date("2014-03-23") }

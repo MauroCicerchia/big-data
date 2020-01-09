@@ -1,6 +1,7 @@
-a.db.facturas.find(
+// a
+db.facturas.find(
   { "cliente.apellido": { $regex: ".*i", $options: "i", $ne: "Manoni" } },
   { nroFactura: 1 }
 );
 
-b.
+// b
