@@ -1,0 +1,76 @@
+a.db.facturas.find({}).count();
+
+b.db.facturas.findOne({}, { _id: 0 });
+
+c.db.facturas
+  .find({
+    fechaEmision: { $gt: new Date("2014-02-23") },
+    nroFactura: { $lt: 1500 }
+  })
+  .sort({
+    "cliente.region": 1,
+    "cliente.cuit": 1
+  });
+
+d.db.facturas
+  .find(
+    {
+      "item.producto": "CORREA 10mm"
+    },
+    {
+      cliente: 1
+    }
+  )
+  .sort({
+    "cliente.apellido": 1
+  });
+
+e.db.facturas.find(
+  {
+    nroFactura: { $gt: 2500, $lt: 3000 }
+  },
+  {
+    "cliente.nombre": 1,
+    "cliente.apellido": 1
+  }
+);
+
+f.db.facturas.find(
+  {
+    nroFactura: { $in: [5000, 6000, 7000, 8000] }
+  },
+  {
+    fechaVencimiento: 1
+  }
+);
+
+g.db.facturas
+  .find({
+    "cliente.apellido": /^Z/i
+  })
+  .sort({
+    nroFactura: 1
+  })
+  .limit(5);
+
+h.db.facturas
+  .find({
+    $or: [{ "cliente.region": "CENTRO" }, { condPago: "CONTADO" }]
+  })
+  .sort({
+    nroFactura: -1
+  })
+  .skip(5)
+  .limit(5);
+
+i.db.facturas.find({
+  "cliente.apellido": { $nin: ["Zavasi", "Malinez"] }
+});
+
+j.db.facturas.find({ "item.cantidad": 15 }, { "item.producto": 1 });
+
+k.db.facturas.findOne({
+  "cliente.cuit": 2038373771,
+  condPago: "30 Ds FF",
+  fechaVencimiento: { $gt: new Date("2014-03-20"), $lt: new Date("2014-03-23") }
+});

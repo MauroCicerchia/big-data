@@ -1,0 +1,55 @@
+
+
+mongod (server)
+  --dbpath
+  --port
+  --config
+  --logpath
+  --fork
+  --auth
+
+
+
+  config
+
+
+
+  db.collection.help() -> lista metodos
+
+
+  db.collection.find() -> iterador -> find().toArray()
+
+  find().limit(n).skip(n).toArray()
+
+  find({ "item.precio": 10 }, { nroFactura: 1, item: 1 })
+
+  find({ "item.precio": { $gt: 100 } })
+
+  find({ $or: [{...}, {...}] })
+
+
+  regex   /^Ma.*ni/i    ->  Ma....ni  (case insensitive)
+
+  { campo: { $regex: "Ma.*ni", $options: "i" } }
+
+  insert(document || documents, options)
+
+
+  bulk writes  (lote)
+
+  bulk = db.facturas.initializeOrderedBulkOp()
+
+  bulk.insert(...)
+
+  bulk.execute()
+
+
+  remove({ where })
+
+  update({ where }, doc, options)    : options: { upsert (update o insert), multi(+ de 1), writeconcern(replicas) }
+
+  parcial   update(where, { $set: { x: 100 } })
+
+
+  .sort({ item: 1 })  .sort({ item: -1 })
+

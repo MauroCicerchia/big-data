@@ -1,0 +1,40 @@
+createIndex({ key: 1 || -1 }); -> simple
+
+createIndex({ key1: 1, key2: 1 }) -> compuesto
+
+// !! Equality, Sort, Range -> orden de parametros indice
+
+// indice geoespacial
+
+// 2dsphere
+
+createIndex({ ubicacion: "2dsphere" })
+
+find({ ubicacion: { $near: [lat, long] }})
+
+createIndex({ "item.producto": 1 }) -> multikey, array
+
+createIndex({ key: 1 }, true) -> unique
+
+createIndex({ "item.producto": "text" }) -> indice sobre un campo de texto      // solo palabras completas
+
+createIndex({ "$**": "text" }) -> indice sobre todos los campos de texto
+
+createIndex({ key: 1 }, { sparse: true }) -> solo crea indice para los documentos que tiene la key como atributo
+
+createIndex({ key: 1 }, { partialFilterExpression: { estado: { $exists: true } } })
+
+createIndex({ key: 1 }, { expireAfterSeconds: 3600 }) -> TTL
+
+find().explain(verbosity) -> para analisis
+
+  stages: {
+    COLLSCAN, -> sin indice
+    IXSCAN, -> con indice
+    SORT,
+    PROJECTION
+  }
+
+  // covered queries: saca info del indice sin consultar el documento
+
+find().hint(index) -> especificar indice a usar

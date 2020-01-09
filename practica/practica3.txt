@@ -1,0 +1,149 @@
+//a
+db.facturas.update(
+  { nroFactura: 1000 },
+  { $push: { item: { producto: "Destornillador", cantidad: 2, precio: 20 } } }
+);
+
+//b
+db.facturas.update({ nroFactura: 1000 }, { $pop: { item: -1 } });
+
+//c
+db.facturas.update(
+  { nroFactura: 1000 },
+  { $pull: { item: { producto: "CORREA 10mm" } } }
+);
+
+//d
+factura = db.facturas.findOne({ nroFactura: 1000 });
+fac.item = undefined;
+db.facturas.update({ nroFactura: 1000 }, factura);
+
+//e
+db.facturas.update({ nroFactura: 1001 }, { $unset: { item: "" } });
+
+//f
+source = db.facturas.findOne({ nroFactura: 1002 });
+db.facturas.update(
+  { nroFactura: { $in: [1000, 1001] } },
+  { $push: { item: { $each: source.item } } },
+  { multi: true }
+);
+
+//g
+db.facturas.update(
+  { "cliente.apellido": "Lavagno" },
+  { $set: { "cliente.tipo": "VIP" } },
+  { multi: true }
+);
+
+//h
+db.facturas.update(
+  { "cliente.tipo": { $exists: true } },
+  { $push: { item: { producto: "Regalo" } } },
+  { multi: true }
+);
+
+//i
+db.facturas.update(
+  { "cliente.nombre": "Julio", "cliente.apellido": "Gonzales" },
+  { $addToSet: { intereses: { $each: ["Plomeria", "Electronica"] } } },
+  { multi: true }
+);
+
+//j
+db.facturas.findOne({
+  item: { $elemMatch: { producto: "TALADRO 12mm", cantidad: 1 } }
+});
+
+//k
+db.facturas.findOne(
+  {
+    item: { $elemMatch: { producto: "TALADRO 12mm", cantidad: 1 } }
+  },
+  { nroFactura: 1, "item.$": 1 }
+);
+
+//l
+db.facturas.update(
+  {
+    item: { $elemMatch: { producto: "CORREA 12mm", cantidad: 11 } }
+  },
+  { $inc: { "item.$.precio": 1 } },
+  { multi: true }
+);
+
+//m
+db.facturas.findOne(
+  { item: { $elemMatch: { producto: "CORREA 10mm", cantidad: 2 } } },
+  { "item.$": 1 }
+);
+
+//n
+db.newCollection.update(
+  { y: 1 },
+  {
+    $push: { x: { $each: [1, 3, 5, 7, 8, 4, 9, 2], $sort: 1, $slice: 3 } },
+    $setOnInsert: { creado: ISODate() }
+  },
+  { upsert: true }
+);
+
+//o
+db.newCollection.insert({ x: new Date() });
+db.newCollection.insert({ x: "mongo" });
+db.newCollection.insert({ x: "db" });
+db.newCollection.find({ x: { $type: "string" } });
+
+//p
+_9998 = db.facturas.findOne({ nroFactura: 9998 });
+db.facturas.update(
+  { nroFactura: 9999 },
+  { $push: { item: { $each: _9998.item, $sort: { precio: 1 } } } }
+);
+
+//q
+_9996 = db.facturas.findOne({ nroFactura: 9996 });
+db.facturas.update(
+  { nroFactura: 9999 },
+  { $push: { item: { $each: _9996.item, $sort: { precio: -1 }, $slice: 3 } } }
+);
+
+//r
+db.facturas.update(
+  {},
+  {
+    $push: {
+      "cliente.intereses": { $each: ["Mecanica"], $slice: 2 }
+    }
+  },
+  { multi: true }
+);
+
+//s
+_3325 = db.facturas.findOne({ nroFactura: 3325 });
+_3325.fechaVencimiento = new Date();
+_3325.condPago = "CONTADO";
+db.facturas.save(_3325);
+
+//t
+_3325 = db.facturas.findOne({ nroFactura: "Invalido" });
+_3325._id = undefined;
+_3325.nroFactura = "Invalido";
+db.facturas.remove({ nroFactura: "Invalido" });
+db.facturas.save(_3325);
+
+//u
+db.facturas.findAndModify({
+  query: { "cliente.region": "CABA" },
+  sort: { nroFactura: 1 },
+  update: { $inc: { coutas: 1 } },
+  new: true
+});
+
+//v
+deleted = db.facturas.findAndModify({
+  query: { nroFactura: 1700 },
+  update: { $pop: { item: -1 } },
+  new: false
+});
+deletedItem = deleted.item[0];

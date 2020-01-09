@@ -1,0 +1,36 @@
+update(where, { $push: { items: "asdsad" } }) -> permite repetidos
+
+update(where, { $addToSet: { items: "asdsad" } }) -> no permite repetidos
+
+update(where, { $pop: { items: 1 || -1 } }) -> 1 ultimo -1 primero
+
+update(where, { $pull: { items: 6 } }) -> saca el 6 del array
+update(where, { $pull: { items: { cantidad: 5 } } }) -> saca el que matchea
+
+update(where, { $pullAll: { items: [6, 8] } }) -> elimina todos
+
+find({ item: { $elemMatch: { producto: "CORREA 10mm", cantidad: 2 } } }) -> el mismo elemento tiene que cumplir las dos
+
+find({ item: { producto: "CORREA 10mm", cantidad: 2 } }) -> cada una es cumplida por al menos un elemento
+
+find(where, { "item.$": 1 }) -> primer elemento del array
+
+update(where, { $set: { "item.$.precio": 500 } })
+
+update(where, { $push: { items: { $each: [1, 2, 3] } } }) -> concat
+
+update(where, { $push: { items: { $each: [1, 2, 3], $slice: 5 } } }) -> slice array
+
+update(where, { $push: { items: { $each: [{ nota: 3 }, { nota: 1 }, { nota: 4 }], $sort: { nota: 1 } } } }) -> ordena el array
+
+update(where, { $setOnInsert: { createdAt: ISODate() }, { upsert: true } }) -> id(upsert && insert) set createdAt
+
+find({ x: { $type: "date" } })
+
+save(document) -> upsert
+
+findAndModify({ query, sort, remove, update, new, fields, upsert }) -> atomico
+
+update({ operator: { "array.$[<identifier>]": value } }, { arrayFilters: { "<identifier>": filter } }) -> filtrar dentro de array
+
+
