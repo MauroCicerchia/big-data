@@ -1,0 +1,22 @@
+// 2.1
+db.facturas.createIndex({ nroFactura: 1 }, { unique: true });
+
+//2.2
+db.facturas.find(
+  { nroFactura: { $gte: 1000, $lte: 1015 } },
+  { nroFactura: 1, fechaFactura: 1, condPago: 1, cliente: 1 }
+);
+
+//2.3
+db.facturas
+  .find(
+    { nroFactura: { $gte: 1000, $lte: 1015 } },
+    { nroFactura: 1, fechaFactura: 1, condPago: 1, cliente: 1 }
+  )
+  .explain();
+
+//2.4
+db.facturas.find({ "cliente.apellido": "Malinez" }).hint("nroFactura_1");
+
+//3.1
+db.facturas.createIndex({ "$**": "text" });

@@ -1,0 +1,3 @@
+db.system.js.save({ _id: "name", value: () => {} });
+
+db.loadServerScripts();

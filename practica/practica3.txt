@@ -66,10 +66,15 @@ db.facturas.findOne(
 //l
 db.facturas.update(
   {
-    item: { $elemMatch: { producto: "CORREA 12mm", cantidad: 11 } }
+    item: { $exists: 1 }
   },
-  { $inc: { "item.$.precio": 1 } },
-  { multi: true }
+  { $inc: { "item.$[elemento].precio": 1 } },
+  {
+    arrayFilters: [
+      { "elemento.producto": " CORREA 12mm", "elemento.cantidad": 11 }
+    ],
+    multi: true
+  }
 );
 
 //m

@@ -1,0 +1,58 @@
+db.facturas.aggregate([...stages]);
+
+db.facturas.aggregate([
+  { $match: { key: value } }, //WHERE
+  { $group: { _id: "$key", total: { $sum: "$key" } } } //GROUP BY SUM
+]);
+
+$match; //WHERE HAVING
+$group; //GROUP BY
+$project; //SELECT
+$sort; //ORDER BY
+$limit; //LIMIT TOP
+$sum; //SUM COUNT
+$lookup; //JOIN
+$unwind; //FLATTEN?       -->   { a: 1, b: [2, 3] }  -->   { a: 1, b: 2 }, { a: 1, b: 3 }
+
+COUNT = () =>
+  db.facturas.aggregate([
+    {
+      $group: {
+        _id: null,
+        count: { sum: 1 }
+      }
+    }
+  ]);
+
+SUM = () =>
+  db.facturas.aggregate([
+    {
+      $group: {
+        _id: null,
+        total: { sum: "$totalOrden" }
+      }
+    }
+  ]);
+
+COUNT_GROUP_BY_ORDER_BY = () =>
+  db.facturas.aggregate([
+    {
+      $group: {
+        _id: "$condPago",
+        total: { sum: "$totalOrden" }
+      }
+    },
+    { $sort: { total: 1 } }
+  ]);
+
+LEFT_JOIN = () =>
+  db.facturas.aggregate([
+    {
+      $lookup: {
+        from: "clientes",
+        localField: "cuit",
+        foreignFied: "cuit",
+        as: "datosCliente"
+      }
+    }
+  ]);
