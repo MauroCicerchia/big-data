@@ -14,8 +14,7 @@ db.facturas.update(
 );
 
 //d
-factura = db.facturas.findOne({ nroFactura: 1000 });
-fac.item = undefined;
+let factura = db.facturas.findOne({ nroFactura: 1000 }, { item: 0 });
 db.facturas.update({ nroFactura: 1000 }, factura);
 
 //e

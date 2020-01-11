@@ -5,3 +5,137 @@ db.facturas.find(
 );
 
 // b
+db.facturas.find({
+  "cliente.apellido": /i$/i,
+  "cliente.region": "CABA",
+  item: { $elemMatch: { producto: /TUERCA/i, cantidad: 1 } }
+});
+
+//c
+db.facturas.find({
+  "item.producto": /CORREA/i
+});
+
+//d
+db.facturas.find({ "item.cantidad": { $gte: 12 } }, { cliente: 1 });
+
+//e
+db.facturas.find({ "item.producto": { $not: /SET HERRAMIENTAS/i } });
+
+//f
+db.facturas
+  .find({})
+  .forEach(({ nroFactura, cliente: { apellido }, item }) =>
+    print(
+      `Factura ${nroFactura}: ${apellido} compró ${item
+        .map(it => it.cantidad)
+        .reduce((acc, curr) => acc + curr)} items`
+    )
+  );
+
+//g
+db.facturas.insert({
+  nroFactura: 999,
+  cliente: { nombre: "Mauro", apellido: "Cicerchia" },
+  item: [{ producto: "Destornillador", cantidad: 1, precio: 0 }]
+});
+
+//h
+//???
+
+//i
+bulk = db.facturas.initializeOrderedBulkOp();
+bulk
+  .find({ "cliente.apellido": "Lavagno" })
+  .update({ $set: { "cliente.tipo": "VIP" } });
+bulk.execute();
+
+//j
+db.facturas.remove({ "cliente.region": "CENTRO" });
+
+//k
+let factura = db.facturas
+  .find({
+    "cliente.apellido": "Lavagno",
+    "item.producto": "SET HERRAMIENTAS"
+  })
+  .sort({ nroFactura: -1 })
+  .limit(1)
+  .next();
+
+db.facturas.remove(factura);
+
+//l
+db.facturas.update({ nroFactura: 1501 }, { $inc: { nroFactura: 1 } });
+
+//m
+db.facturas.update({ nroFactura: 1500 }, { $set: { condPago: "30 Ds FF" } });
+
+//n
+db.facturas.update({ nroFactura: 1510 }, { $inc: { nroFactura: -9 } });
+
+//o
+db.facturas.update({ nroFactura: 1515 }, { $inc: { vistas: 1, contador: -1 } });
+
+//p
+db.facturas.update(
+  { nroFactura: 1000 },
+  { $push: { item: { producto: "Destornillador", cantidad: 2, precio: 20 } } }
+);
+
+//q
+db.facturas.update({ nroFactura: 1000 }, { $pop: { item: -1 } });
+
+//r
+db.facturas.update(
+  { nroFactura: 1000 },
+  { $pull: { item: { producto: "CORREA 10mm" } } }
+);
+
+//s
+let factura = db.facturas.findOne({ nroFactura: 1000 }, { item: 0 });
+db.facturas.update({ nroFactura: 1000 }, factura);
+
+//t
+db.facturas.update({ nroFactura: 1001 }, { $unset: { item: "" } });
+
+//u
+source = db.facturas.findOne({ nroFactura: 1002 });
+db.facturas.update(
+  { nroFactura: { $in: [1000, 1001] } },
+  { $push: { item: { $each: source.item } } },
+  { multi: true }
+);
+
+//v
+db.facturas.update(
+  { "cliente.apellido": "Lavagno" },
+  { $set: { "cliente.tipo": "VIP" } },
+  { multi: true }
+);
+
+//w
+db.facturas.update(
+  { "cliente.tipo": { $exists: true } },
+  { $push: { item: { producto: "Regalo" } } },
+  { multi: true }
+);
+
+//x
+db.facturas.update(
+  { nroFactura: 900 },
+  { cliente: { nombre: "Julio", apellido: "Gonzales" } },
+  { upsert: true }
+);
+
+//y
+db.facturas.update(
+  { "cliente.nombre": "Julio", "cliente.apellido": "Gonzales" },
+  { $addToSet: { intereses: { $each: ["Plomeria", "Electronica"] } } },
+  { multi: true }
+);
+
+//z
+let _9000 = db.facturas.findOne({ nroFactura: 9000 });
+db.facturas.update({ nroFactura: 9000 }, { x: Math.random() });
+// Se puede consultar por el campo _9000._id
