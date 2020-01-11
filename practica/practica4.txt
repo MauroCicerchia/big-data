@@ -18,5 +18,89 @@ db.facturas
 //2.4
 db.facturas.find({ "cliente.apellido": "Malinez" }).hint("nroFactura_1");
 
+//3
+db.facturas.createIndex({ "$**": "text" }, { default_language: "spanish" });
+
 //3.1
-db.facturas.createIndex({ "$**": "text" });
+db.facturas.find({ $text: { $search: "TALADRO" } }).count();
+
+//3.2
+db.facturas.find({ $text: { $search: "TALADRO TUERCA" } });
+
+//3.3
+db.facturas.find({ $text: { $search: '"Ds FF"' } }).count();
+
+//3.4
+db.facturas.find({ $text: { $search: '"30 Ds FF"' } }).count();
+
+//3.5
+let a = db.facturas.find({ $text: { $search: '"Ds FF"' } }).count();
+let b = db.facturas.find({ $text: { $search: '"30 Ds FF"' } }).count();
+a - b == db.facturas.find({ $text: { $search: '"60 Ds FF"' } }).count();
+
+//4
+const newDoc = i => ({
+  nroSolicitud: i,
+  tipoSolicitud: "TEXTO",
+  fechaSolicitud: new Date()
+});
+
+db.solicitudes.insert([1, 2, 3].map(newDoc));
+
+//4.1
+db.solicitudes.createIndex({ fechaSolicitud: 1 }, { expireAfterSeconds: 60 });
+
+//5.1
+db.facturas.find({ "cliente.region": "NEA" }).explain("executionStats");
+
+//5.2
+db.facturas.createIndex({ "cliente.region": 1 });
+
+//6.1
+db.facturas.find({ "cliente.region": "NEA" }).sort({ nroFactura: -1 });
+
+//6.2
+db.facturas.createIndex({ "cliente.region": 1, nroFactura: -1 });
+
+//6.3
+db.facturas //22ms
+  .find({ "cliente.region": "NEA" })
+  .sort({ nroFactura: -1 })
+  .hint("cliente.region_1_nroFactura_-1")
+  .explain("executionStats");
+db.facturas //47ms
+  .find({ "cliente.region": "NEA" })
+  .sort({ nroFactura: -1 })
+  .hint("cliente.region_1")
+  .explain("executionStats");
+db.facturas //65ms
+  .find({ "cliente.region": "NEA" })
+  .sort({ nroFactura: -1 })
+  .hint("_id_")
+  .explain("executionStats");
+
+//7.1
+db.comercios.find({});
+
+//7.2
+db.comercios.createIndex({ ubicacion: "2d" });
+
+//7.3
+db.comercios.find({
+  ubicacion: { $near: [-58.42, -34.58], $maxDistance: 0.05 }
+}); //11 documentos
+
+//7.4
+db.comercios.find({
+  ubicacion: { $near: [-58.42, -34.58], $maxDistance: 0.015 }
+}); //3 documentos
+
+//7.5
+db.comercios.find({
+  ubicacion: { $near: [-58.42, -34.58], $maxDistance: 5 }
+}); //18 documentos
+
+//8
+db.libros.update({ titulo: /mongodb/i }, { $set: { idioma: "english" } });
+db.libros.update({ titulo: /mongodb/i }, { $set: { idioma: "Inglés" } });
+db.libros.createIndex({ titulo: "text" }, { language_override: "idioma" });
