@@ -41,7 +41,6 @@ db.facturas.insert({
 });
 
 //h
-//???
 
 //i
 bulk = db.facturas.initializeOrderedBulkOp();

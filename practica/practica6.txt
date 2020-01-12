@@ -1,0 +1,160 @@
+//a
+const printProducts = items =>
+  items.forEach(({ producto }) => print(` - ${producto}`));
+
+//b
+let document = db.facturas.findOne({ nroFactura: 5000 });
+printProducts(document.item);
+
+//c
+document = db.facturas.findOne({ nroFactura: 1330 });
+document.item[0].precio = 15;
+db.facturas.save(document);
+
+//d
+document = db.facturas.findOne({ nroFactura: 1144 });
+document.item.forEach(it => (it.precio += 10));
+db.facturas.update({ nroFactura: 1144 }, document);
+
+//e
+const printFactura = document => {
+  print(`Cliente: ${document.cliente.apellido}, ${document.cliente.nombre}`);
+  print(`Nro Factura: ${document.nroFactura}`);
+  print(`Cond Pago: ${document.condPago}`);
+  print(`Fecha Emision: ${document.fechaEmision}`);
+  print(`Fecha Vencimiento: ${document.fechaVencimiento}`);
+  printProducts(document.item);
+};
+db.system.js.save({ _id: "printFactura", value: printFactura });
+
+db.facturas
+  .find({ "cliente.apellido": "Manoni" })
+  .sort({ nroFactura: -1 })
+  .limit(1)
+  .forEach(printFactura);
+
+//f
+document = db.facturas.findOne(
+  { nroFactura: 2345 },
+  { condPago: 0, fechaVencimiento: 0 }
+);
+db.facturas.remove({ nroFactura: 2345 });
+db.facturasErroneas.insert(document);
+
+//g
+document = db.facturas.findOne({ nroFactura: 1020 });
+if (document.condPago == "CONTADO")
+  db.facturas.update({ nroFactura: 1020 }, { $set: { porcDescuento: 10 } });
+
+//h
+db.facturas
+  .aggregate([
+    { $unwind: "$item" },
+    { $group: { _id: { producto: "$item.producto", precio: "$item.precio" } } },
+    { $project: { producto: "$_id.producto", precio: "$_id.precio", _id: 0 } }
+  ])
+  .forEach(item => db.items.insert(item));
+
+//i
+let date = new Date();
+db.facturas
+  .aggregate([
+    { $group: { _id: "$cliente", facturas: { $sum: 1 } } },
+    {
+      $project: {
+        nombre: "$_id.nombre",
+        apellido: "$_id.apellido",
+        cuit: "$_id.cuit",
+        region: "$_id.region",
+        fecha: date,
+        facturas: "$facturas",
+        _id: 0
+      }
+    }
+  ])
+  .forEach(cliente => db.clientes.insert(cliente));
+
+//j
+let cliente = db.clientes
+  .find({})
+  .sort({ facturas: 1 })
+  .next();
+db.clientes.remove(cliente);
+db.facturas.remove({ "cliente.cuit": cliente.cuit });
+
+//k
+db.facturas.find({ "cliente.region": "CABA" }).forEach(({ _id, item }) => {
+  if (item.length >= 2)
+    db.facturas.update(
+      { _id },
+      {
+        $set: {
+          item: item.map(({ producto, cantidad }) => ({
+            producto,
+            cantidad
+          }))
+        }
+      }
+    );
+});
+
+//l
+db.system.js.save({ _id: "listarItemsDeFactura", value: printProducts });
+
+//m
+const facturasClientesNuevos = (facturas, clientes) => {
+  db.getCollection(facturas)
+    .aggregate([
+      {
+        $lookup: {
+          from: clientes,
+          localField: "cliente.cuit",
+          foreignField: "cuit",
+          as: "datosCliente"
+        }
+      },
+      { $match: { datosCliente: [] } },
+      { $project: { _id: 0, datosCliente: 0 } }
+    ])
+    .forEach(document => {
+      db.facturasDeClienteNuevo.insert(document);
+    });
+};
+db.system.js.save({
+  _id: "facturasClientesNuevos",
+  value: facturasClientesNuevos
+});
+
+//n
+db.facturas.insert({
+  cliente: {
+    nombre: "Mauro",
+    apellido: "Cicerchia",
+    cuit: 20488563594,
+    region: "CABA"
+  },
+  nroFactura: 9
+});
+
+//o
+db.secuencias.insert({ _id: "nroFacturaSeq", valorSecuencia: 0 });
+const getNextVal = seq =>
+  db.secuencias.findAndModify({
+    query: { _id: seq },
+    update: { $inc: { valorSecuencia: 1 } },
+    new: true
+  }).valorSecuencia;
+db.system.js.save({
+  _id: "getNextVal",
+  value: getNextVal
+});
+
+db.facturas.insert({
+  nroFactura: getNextVal(),
+  cliente: {
+    nombre: "Mauro",
+    apellido: "Cicerchia",
+    cuit: 20488563594,
+    region: "CABA"
+  }
+});
