@@ -1,0 +1,101 @@
+//1
+SELECT nombre, latitud, longitud
+FROM estaciones;
+
+//2
+SELECT COUNT(DISTINCT userID)
+FROM recorridos;
+
+//3
+SELECT COUNT(*) AS cant_ciclistas, AVG(edad) AS edad_promedio
+FROM ciclistas;
+
+//4
+SELECT MAX(edad), MIN(edad)
+FROM ciclistas;
+
+//5
+SELECT COUNT(apellido)
+FROM ciclistas
+WHERE edad BETWEEN 30 AND 40;
+
+//6
+SELECT
+  userID,
+  estacionOrigenId,
+  fechaOrigen,
+  estacionDestinoID,
+  COALESCE(CAST(fechaDestino AS STRING), "Desconocida"),
+  COALESCE(CAST(duracion AS STRING), "Desconocida")
+FROM recorridos;
+
+//7
+SELECT COUNT(*)
+FROM ciclistas
+WHERE LOWER(nombre) LIKE "%jose%";
+
+//8
+SELECT estacionOrigenId, SUM(duracion) AS duracionTotal
+FROM recorridos
+GROUP BY estacionOrigenId
+DISTRIBUTE BY duracionTotal
+SORT BY duracionTotal DESC;
+
+//9
+SELECT estacionOrigenId, SUM(duracion) AS duracionTotal
+FROM recorridos
+GROUP BY estacionOrigenId
+HAVING duracionTotal BETWEEN 10000 AND 20000
+DISTRIBUTE BY duracionTotal
+SORT BY duracionTotal DESC;
+
+//10
+SELECT nombre, SUM(duracion) AS duracionTotal
+FROM recorridos
+JOIN estaciones
+  ON estacionOrigenId = id
+GROUP BY estacionOrigenId, nombre
+DISTRIBUTE BY duracionTotal
+SORT BY duracionTotal DESC;
+
+//11
+SELECT nombre, apellido, MAX(duracion)
+FROM ciclistas
+JOIN recorridos
+  ON userID = id
+GROUP BY nombre, apellido;
+
+//12
+SELECT nombre, apellido, MAX(duracion) AS dur_max
+FROM ciclistas
+JOIN recorridos
+  ON userID = id
+GROUP BY nombre, apellido
+DISTRIBUTE BY dur_max
+SORT BY dur_max DESC
+LIMIT 1;
+
+//13
+SELECT c.nombre, c.apellido, e.nombre, COUNT(1)
+FROM recorridos r
+JOIN ciclistas c
+  ON c.id = r.userID
+JOIN estaciones e
+  ON e.id = r.estacionOrigenId
+GROUP BY c.nombre, c.apellido, e.nombre;
+
+//14
+a: 10.675s
+b: 11.446s
+
+//15
+a: 50.832s
+b: 20.387s
+
+//16
+  Motor   |   ORDER BY    |   SORT BY   |   DIST + SORT   |   CLUSTER BY    |
+__________|_______________|_____________|_________________|_________________|
+  Tez     |               |             |                 |                 |
+__________|_______________|_____________|_________________|_________________|
+  MR      |               |             |                 |                 |
+__________|_______________|_____________|_________________|_________________|

@@ -1,0 +1,98 @@
+//1
+CREATE DATABASE curso05 LOCATION '/user/curso05/curso05DB';
+
+//2
+CREATE DATABASE test05 COMMENT 'base de datos de prueba' LOCATION '/user/curso05/bdTest';
+
+//3
+SHOW DATABASES;
+
+//4
+DESCRIBE DATABASE test05;
+
+//5
+DROP DATABASE test05;
+
+//6
+CREATE TABLE ciclistas (
+  id INT,
+  apellido STRING,
+  nombre STRING,
+  edad INT )
+ROW FORMAT DELIMITED
+FIELDS TERMINATED BY '|'
+LINES TERMINATED BY '\n';
+
+CREATE TABLE estaciones (
+  id INT,
+  nombre STRING,
+  latitud DOUBLE,
+  longitud DOUBLE )
+COMMENT 'Estaciones de bicis'
+ROW FORMAT DELIMITED
+FIELDS TERMINATED BY ','
+LINES TERMINATED BY '\n';
+
+CREATE TABLE recorridos (
+  userID INT,
+  estacionOrigenID INT,
+  fechaOrigen TIMESTAMP,
+  estacionDestinoID INT,
+  fechaDestino TIMESTAMP,
+  duracion INT )
+COMMENT 'Recorridos de los usuarios'
+ROW FORMAT DELIMITED
+FIELDS TERMINATED BY '|'
+LINES TERMINATED BY '\n';
+
+//7
+DESCRIBE recorridos;
+
+//8
+CREATE TABLE recorridosNuevo LIKE recorridos;
+
+//9
+ALTER TABLE recorridosNuevo CHANGE COLUMN fechaOrigen fechaOrigen STRING;
+ALTER TABLE recorridosNuevo CHANGE COLUMN fechaDestino fechaDestino STRING;
+
+//10
+ALTER TABLE recorridosNuevo ADD COLUMNS (
+  zona STRING,
+  biciId INT
+);
+
+//11
+ALTER TABLE recorridosNuevo RENAME TO recorridosFutura;
+
+//12
+LOAD DATA INPATH '/user/curso05/dirHDFS/MaestroCiclistas.csv'
+OVERWRITE INTO TABLE ciclistas;
+
+LOAD DATA INPATH '/user/curso05/dirHDFS/estaciones-bicis.csv'
+OVERWRITE INTO TABLE estaciones;
+
+LOAD DATA INPATH '/user/curso05/dirHDFS/recorridoBicis.csv'
+OVERWRITE INTO TABLE recorridos;
+
+//13
+CREATE TABLE ciclistas_orc STORED AS ORC
+AS SELECT * FROM ciclistas;
+
+CREATE TABLE estaciones_orc STORED AS ORC
+AS SELECT * FROM estaciones;
+
+CREATE TABLE recorridos_orc STORED AS ORC
+AS SELECT * FROM recorridos;
+
+//14
+CREATE TABLE ciclistas60
+AS SELECT * FROM ciclistas ci
+WHERE ci.edad > 60;
+
+//15
+INSERT INTO TABLE ciclistas60
+SELECT * FROM ciclistas ci
+WHERE ci.edad > 50 AND ci.edad <= 60;
+
+//16
+ALTER TABLE ciclistas60 RENAME TO ciclistas50

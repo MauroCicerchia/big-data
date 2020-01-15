@@ -1,0 +1,54 @@
+#1
+mkdir dirLocal
+
+#2
+hdfs dfs -mkdir dirHDFS
+
+#3
+ls
+
+#4
+cp recorridoBicis.csv recorridoBicis2.csv
+
+#5
+mv estaciones-bicis.csv dirLocal/
+mv MaestroCiclistas.csv dirLocal/
+mv recorridoBicis2.csv dirLocal/
+mv recorridoBicis.csv dirLocal/
+
+#6
+hdfs dfs -touchz dirHDFS/archivoHDFS.csv
+
+#7
+hdfs dfs -copyFromLocal dirLocal/recorridoBicis.csv dirHDFS/
+
+#8
+hdfs dfs -copyFromLocal dirLocal/estaciones-bicis.csv dirLocal/MaestroCiclistas.csv dirHDFS/
+
+#9
+hdfs dfs -copyFromLocal dirLocal/recorridoBicis2.csv dirHDFS/
+
+#10
+hdfs dfs -ls dirHDFS
+
+#11
+hdfs dfs -appendToFile dirLocal/recorridoBicis.csv dirHDFS/archivoHDFS.csv
+
+#12
+hdfs dfs -copyToLocal dirHDFS/archivoHDFS.csv dirLocal
+
+#13
+hdfs dfs -appendToFile dirLocal/recorridoBicis.csv dirHDFS/archivoHDFS.csv
+hdfs dfs -appendToFile dirLocal/estaciones-bicis.csv dirHDFS/archivoHDFS.csv
+
+#14
+hdfs dfs -ls dirHDFS | grep HDFS
+
+#15
+hdfs dfs -ls dirHDFS/archivoHDFS.csv
+
+#16
+hdfs dfs -chmod 777 dirHDFS/archivoHDFS.csv
+
+#17
+hdfs dfs -ls dirHDFS/archivoHDFS.csv

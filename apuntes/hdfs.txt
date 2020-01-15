@@ -1,0 +1,40 @@
+Operaciones -> 
+  - Create
+  - Rename
+  - Append
+  - Delete
+  - Modificar metadata
+
+Bloque de 128 MB
+
+
+    NameNode   ------  CheckpointNode
+        |
+        |
+        |
+        |
+    ---------------
+DataNode       DataNode
+
+
+hdfs dfs -ls /
+
+hdfs dfs -appendToFile [<archivoLocal>] <archivoHadoop>
+cat file | hdfs dfs -appendToFile - <archivoHadoop>
+
+hdfs dfs -cat [<archivoHadoop>]
+
+hdfs dfs -chgrp <grupo> <archivo>
+hdfs dfs -chgrp <grupo> -R <directorio>
+
+hdfs dfs -copyFromLocal [-f] [-p] <archivoLocal> <dirHadoop>
+
+hdfs dfs -copyToLocal <archivoHadoop> <archivoLocal>
+
+hdfs dfs -cp <archivoHadoop> <archivoHadoop>
+
+hdfs dfs -du <archivoHadoop> -> Size
+
+hdfs dfs -get <archivoHadoop> <archivoLocal>
+
+hdfs dfs -text <archivoHadoop> -> lee archivo comprimido

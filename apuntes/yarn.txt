@@ -1,0 +1,8 @@
+Zookeeper         out
+----------------
+Scheduler         
+ResourceManager
+----------------
+NodeManager
+AplicationMaster
+Container

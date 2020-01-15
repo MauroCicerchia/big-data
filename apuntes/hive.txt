@@ -1,0 +1,9 @@
+HDFS
+|_DB
+  |_Tabla
+  | |_Particion
+  | |_Particion
+  |
+  |_Otra_Tabla
+    |_Particion
+    |_Particion

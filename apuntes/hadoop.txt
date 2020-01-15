@@ -1,0 +1,71 @@
+Procesamiento paralelo
+
+Grandes volumenes de datos
+
+HDFS -> Hadoop Distributed FS (Escrito en Java)
+
+Replicaciones
+WriteOnce ReadMany
+
+YARN -> Yet Another Resource Negotiator
+
+Gestion de Recursos
+
+MAP-REDUCE -> Map en paralelo, luego reduce de las respuestas
+
+stream
+  .concurrentFlatMap(n)
+  .reduce()
+
+TEZ -> FW de procesamiento distribuido basado en diagrama de flujo
+
+SPARK -> FW de computacion clusterizada
+
+HIVE -> Consultar datos de Hadoop como si fuesen tablas usando SQL (HQL)
+
+
+      HIVE
+-------------------
+TEZ        MAP-REDUCE
+-------------------
+      HDFS
+
+
+PIG -> lenguaje desarrollado por Yahoo (????) basado en Java (?????????????????) sirve para logs
+
+HUE -> Hadoop User Experience
+
+ZOOKEEPER -> sincronizacion, garantiza consistencia
+
+Data Nodes (esclavos)
+Name? Node (maestro, conoce la ubicacion de los datos)
+
+KAFKA -> Cola de mensajes
+
+FLUME -> Lee colas de Kafka, Recolector de datos
+
+Ej: Twitter -> Kafka -> Flume -> HDFS
+
+SQOOP -> Importar/Exportar datos Relacional/Hadoop
+
+NUTCH -> Web crawling, parsea docs .doc .pdf .html .js .xml
+
+MAHOUT -> Machine Learning
+
+HBASE -> Base de datos
+
+AMBARI -> Interfaz web para gestionar hadoop
+
+ZEPPELIN -> Notebooks tipo Jupiter multilenguaje
+
+
+ZKFailoverController -> Controla que el Name Node no esten caidos
+
+Journal node -> log de operaciones del Name Node
+
+
+Map   |   Sort&Combine   |   
+      |                  |   
+Map   |   Sort&Combine   |   Reduce
+      |                  |   
+Map   |   Sort&Combine   |   
