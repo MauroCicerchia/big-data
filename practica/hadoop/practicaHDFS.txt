@@ -52,3 +52,54 @@ hdfs dfs -chmod 777 dirHDFS/archivoHDFS.csv
 
 #17
 hdfs dfs -ls dirHDFS/archivoHDFS.csv
+
+#18
+hdfs dfs -count dirHDFS
+
+#19
+hdfs dfs -cp dirHDFS/MaestroCiclistas.csv dirHDFS/MaestroCiclistas2.csv
+
+#20
+hdfs dfs -cat dirHDFS/MaestroCiclistas2
+
+#21
+hdfs dfs -chgrp curso dirHDFS/archivoHDFS.csv
+
+#22
+hdfs dfs -ls dirHDFS
+
+#23
+hdfs dfs -cat dirHDFS/* > archivoLocal.csv
+
+#24
+hdfs dfs -mv dirHDFS/archivoHDFS.csv /user/curso05
+
+#25
+hdfs dfs -ls -R /user/curso05
+
+#26
+hdfs dfs -rm dirHDFS/MaestroCiclistas2.csv
+
+#27
+hdfs dfs -tail dirHDFS/archivoHDFS.csv
+
+#28
+hdfs dfs -rmdir dirHDFS
+
+#29
+hdfs dfs -ls .trash
+
+#30
+hdfs dfs -mv .trash/recorridoBicis.csv ./
+
+#31
+hdfs dfs -expunge
+
+#32
+hdfs dfs -tail recorridoBicis.csv > ultimos.csv
+
+#33
+hdfs dfs -tail recorridoBicis.csv > ultimos.csv
+
+#34
+hdfs dfs -rm *bicis*
